@@ -26,10 +26,10 @@ function Homepage() {
     const [color, setColor] = useState("")
     const [notes, setNotes] = useState([])
 
-
+    const [searchQuery, setSearchQuery] = useState('');
     return (
         <div className=' h-screen flex '>
-            <NotesContext.Provider value={{ color, setColor, notes, setNotes }}>
+            <NotesContext.Provider value={{ color, setColor, notes, setNotes, searchQuery, setSearchQuery }}>
                 <Left />
                 <div className='flex flex-col space-y-2'>
                     <Nav />

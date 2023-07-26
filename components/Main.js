@@ -2,9 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Chela_One, Inter, Manrope, Raleway } from 'next/font/google';
 import Image from 'next/image';
 import Card from './Card';
-import sample from '../sample.json';
 import { NotesContext } from '../contexts/NotesContext';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const raleway = Raleway({
@@ -19,9 +18,9 @@ const manrope = Manrope({
 function Main() {
     const [todayDate, setTodayDate] = useState('');
     const [newNoteBody, setNewNoteBody] = useState('');
-
-
-    const { color, notes } = useContext(NotesContext);
+    const [submitted, setSubmitted] = useState(false);
+    const { notes, setNotes, color } = useContext(NotesContext);
+    const [searchQuery, setSearchQuery] = useState('');
 
     function formatDate(dateString, format) {
         const options = { day: 'numeric', month: format, year: 'numeric' };
@@ -33,33 +32,93 @@ function Main() {
         const formattedDate = formatDate(new Date(), 'long');
         setTodayDate(formattedDate);
     }, []);
-    
-    async function addNotes(e) {
 
-        await addDoc(collection(db, "notes"), {
+
+    useEffect(() => {
+        if (!submitted) {
+            const fetchNotes = async () => {
+                const querySnapshot = await getDocs(collection(db, 'notes'));
+                querySnapshot.forEach((doc) => {
+                    setNotes((note) => [
+                        ...note,
+                        {
+                            id: doc.id,
+                            body: doc.data().body,
+                            color: doc.data().color,
+                            date: doc.data().date,
+                        },
+                    ]);
+                    console.log(doc.id, ' => ', doc.data());
+                });
+            };
+
+            fetchNotes();
+            setSubmitted(true);
+        }
+    }, []);
+    async function addNotes(e) {
+        await addDoc(collection(db, 'notes'), {
             id: notes.length + 1,
             body: newNoteBody,
             color: color,
             date: todayDate,
         });
-        alert("Added Notes successfully!")
-        window.location.reload();
-
+        alert('Added Notes successfully!');
+        setNewNoteBody('');
     }
 
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const notesPerPage = 6;
+    const indexOfLastNote = currentPage * notesPerPage;
+    const indexOfFirstNote = indexOfLastNote - notesPerPage;
+    const currentNotes = notes.slice(indexOfFirstNote, indexOfLastNote);
+
+    const totalPages = Math.ceil(notes.length / notesPerPage);
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage((prevPage) => prevPage + 1);
+        }
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage((prevPage) => prevPage - 1);
+        }
+    };
 
     return (
         <div className={`${raleway.className} w-full h-full flex flex-col p-10`}>
             {/* Header */}
-            <div className={`${manrope.className} font-bold text-5xl `}>
+            <div className={`${manrope.className} flex justify-between items-center mx-10 font-bold text-5xl `}>
                 <h1>Notes</h1>
+
+                {/* Pagination Controls */}
+                <div className="flex justify-center space-x-12 text-xl">
+                    <button
+                        onClick={handlePrevPage}
+                        className="px-10 py-4  bg-black rounded-lg text-gray-300 transition hover:scale-110 hover:ease-in cursor-pointer hover:duration-150 hover:shadow-xl"
+                    >
+                        Prev
+                    </button>
+                    <button
+                        onClick={handleNextPage}
+                        className="px-10 py-4  bg-black rounded-lg text-gray-300 transition hover:scale-110 hover:ease-in cursor-pointer hover:duration-150 hover:shadow-xl"
+                    >
+                        Next
+                    </button>
+                </div>
             </div>
+
 
             {/* Grid of notes */}
             <div className="grid grid-cols-3 gap-6 mt-5">
                 {/* New Card selected by the user */}
                 <div
-                    className={`${manrope.className} ${color ? `p-10 flex flex-col justify-between ${color} w-[350px] h-[350px] rounded-2xl text-2xl` : 'hidden'
+                    className={`${manrope.className} ${color
+                        ? `p-10 flex flex-col justify-between ${color} w-[350px] h-[350px] rounded-2xl text-2xl`
+                        : 'hidden'
                         }`}
                 >
                     <div className="font-medium text-gray-800">
@@ -74,23 +133,25 @@ function Main() {
 
                     <div className="flex justify-between items-center text-xl text-gray-800">
                         <h1>{todayDate}</h1>
-                        {
-                            newNoteBody && (
-                                <div
-                                    onClick={() => addNotes()}
-                                    className="px-6 py-2  bg-black rounded-lg text-gray-400 transition hover:scale-110 hover:ease-in cursor-pointer hover:duration-150 hover:shadow-xl">
-                                    {/* <Image src="/edit.svg" alt="edit icon" height="10" width="10" className="h-5 w-5" /> */}
-                                    <h1>Enter</h1>
-                                </div>
-                            )
-                        }
-
+                        {newNoteBody && (
+                            <div
+                                onClick={() => addNotes()}
+                                className="px-6 py-2  bg-black rounded-lg text-gray-400 transition hover:scale-110 hover:ease-in cursor-pointer hover:duration-150 hover:shadow-xl"
+                            >
+                                <h1>Enter</h1>
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 {/* Card */}
-                <Card />
+                <Card
+                    notes={notes}
+                    currentPage={currentPage}
+                    notesPerPage={notesPerPage} />
             </div>
+
+
         </div>
     );
 }

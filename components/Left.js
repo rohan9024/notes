@@ -35,7 +35,7 @@ function Left() {
 
 
     return (
-        <div className={`${raleway.className} w-1/6 h-[1800px] text-left font-normal text-3xl p-10 border-r-2 border-gray-300 space-y-24`}>
+        <div className={`${raleway.className} w-1/6 h-[1100px] text-left font-normal text-3xl p-10 border-r-2 border-gray-300 space-y-24`}>
             <div className={`${manrope.className} font-medium text-3xl `}>
                 <h1>NotesSync</h1>
             </div>
