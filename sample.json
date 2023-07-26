@@ -1,0 +1,64 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "body": "Meeting with clients at 10 AM tomorrow.",
+      "date": "25 July 2023",
+      "color": "bg-red-300"
+    },
+    {
+      "id": 2,
+      "body": "Buy groceries - milk, eggs, bread, and fruits.",
+      "date": "26 July 2023",
+      "color": "bg-yellow-300"
+    },
+    {
+      "id": 3,
+      "body": "Finish the presentation slides for the team meeting.",
+      "date": "27 July 2023",
+      "color": "bg-green-300"
+    },
+    {
+      "id": 4,
+      "body": "Call mom and wish her a happy birthday.",
+      "date": "28 July 2023",
+      "color": "bg-purple-300"
+    },
+    {
+      "id": 5,
+      "body": "Research new design trends for the website redesign.",
+      "date": "29 July 2023",
+      "color": "bg-violet-300"
+    },
+    {
+      "id": 6,
+      "body": "Pay the electricity bill before the due date.",
+      "date": "1 August 2023",
+      "color": "bg-orange-300"
+    },
+    {
+      "id": 7,
+      "body": "Book flight tickets for the upcoming vacation.",
+      "date": "5 August 2023",
+      "color": "bg-red-300"
+    },
+    {
+      "id": 8,
+      "body": "Prepare for the job interview next week.",
+      "date": "10 August 2023",
+      "color": "bg-yellow-300"
+    },
+    {
+      "id": 9,
+      "body": "Attend the webinar on ReactJS development.",
+      "date": "15 August 2023",
+      "color": "bg-green-300"
+    },
+    {
+      "id": 10,
+      "body": "Schedule a doctor's appointment for a health checkup.",
+      "date": "20 August 2023",
+      "color": "bg-purple-300"
+    }
+  ]
+}
